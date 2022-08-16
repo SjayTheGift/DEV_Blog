@@ -20,7 +20,7 @@ class RegisterView(CreateView):
         return render(request, 'users/register.html', {'form': form})
 
 
-class ProfileView(View):
+class ProfileView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         u_form = UserUpdateForm(instance=request.user)

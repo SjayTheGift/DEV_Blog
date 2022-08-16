@@ -5,10 +5,21 @@
 <section class="home">
     <div class="row">
         <div class="col-md-8">
+            {% for post in post_list %}
           <div class="shadow-sm p-4 mb-4 bg-white">
-              sssdsd
+            <h2><a href="{% url 'post_detail' post.slug %}" class="title">{{ post.title | capfirst }}</a></h2>
+            <p><span class="pr-4"><i class="mdi mdi-briefcase"></i> {{ post.author.fullname }}</span>
+                <span class="pr-4"><i class="mdi mdi-calendar" aria-hidden="true"></i> {{ post.created |date:"F d, Y" }}</span>
+                {% with post.comments.count as total_comments %}
+                <span class="pr-4"><i class="mdi mdi-comment-multiple-outline" aria-hidden="true"></i>
+                    {{ total_comments }} comment{{ total_comments|pluralize }}
+                </span>
+                {% endwith %}
+            </p>
           </div>
+          {% endfor %}
         </div>
+        
         <div class="col-md-4">
             <div class="shadow-sm p-4 mb-4 bg-white">
                 SideBar

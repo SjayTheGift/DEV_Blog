@@ -1,4 +1,5 @@
 from email.policy import default
+from turtle import numinput
 from PIL import Image
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
@@ -45,6 +46,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(default=timezone.now)
+    first_name = models.CharField(max_length=200, blank=True, null=True)
+    last_name = models.CharField(max_length=200, blank=True, null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -54,10 +57,17 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
+    @property
+    def fullname(self):
+        return f'{self.first_name} {self.last_name}'
+
 
 class Profile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     image = models.ImageField(default='avatar.jpg', upload_to='profile_pics')
+
+    def __str__(self):
+        return self.user.fullname
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
