@@ -1,6 +1,6 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from .views import RegisterView, ProfileView
+from .views import RegisterView, ProfileView, PasswordChangeView
 from django.shortcuts import redirect
 
 urlpatterns = [
@@ -30,10 +30,5 @@ urlpatterns = [
          ),
          name='password_reset_complete'),
     
-    path('password/',  
-    auth_views.PasswordChangeView.as_view(
-        template_name='users/password_change.html',
-       success_url ='password'
-      
-    ), name='password')
+    path('password/',  PasswordChangeView.as_view(), name='password_change')
 ]

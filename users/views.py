@@ -1,8 +1,12 @@
+from urllib import request
 from django.shortcuts import redirect, render
 from django.views.generic import CreateView, View
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import CustomUserCreationForm, UserUpdateForm, ProfileUpdateForm
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+
 
 
 class RegisterView(CreateView):
@@ -48,7 +52,22 @@ class ProfileView(LoginRequiredMixin, View):
             messages.success(request, f'Your account has been updated!')
             return redirect('profile')
         return render(request, 'users/profile.html', context)
-       
 
-    
- 
+
+class PasswordChangeView(LoginRequiredMixin, View):
+    template_name = 'users/password_change.html'
+
+    def get(self, request, *args, **kwargs):
+        context = {'form': PasswordChangeForm(request.user)}
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        form = PasswordChangeForm(request.user, request.POST)
+        context = {'form': form}
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Your password was changed successfully!')
+            return redirect('profile')
+        return render(request, self.template_name, context)
+
